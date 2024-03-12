@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from pymilvus import Collection, connections
-import openai
 from llama_index.core import (Settings)
 
 load_dotenv()
@@ -11,7 +10,6 @@ connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.gete
 collection = Collection("book03")      # Get an existing collection.
 collection.load()
 
-
 search_params = {
     "metric_type": "L2", 
     "offset": 0, 
@@ -19,11 +17,7 @@ search_params = {
     "params": {"nprobe": 10}
 }
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
-
 query_embedding = Settings.embed_model.get_text_embedding("遊戲王是什麼？")
-
-# print(f"Query embedding: {query_embedding}")
 
 results = collection.search(
     data=[query_embedding], 
@@ -35,8 +29,8 @@ results = collection.search(
     expr=None,
     # set the names of the fields you want to 
     # retrieve from the search result.
-    output_fields=['chunk_metadata'],
-    consistency_level="Strong"
+    output_fields=['metadata'],
+    consistency_level="Eventually"
 )
 
 # get the IDs of all returned hits
@@ -47,6 +41,9 @@ print(results[0].distances)
 
 # get the value of an output field specified in the search request.
 hit = results[0][0]
-print(hit.entity.get('chunk_metadata'))
+metadata = hit.entity.get('metadata')
+print(metadata)
+context = metadata["metadata"]["context"]
+print(context)
 
 collection.release()

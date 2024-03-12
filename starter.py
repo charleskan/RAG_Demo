@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from llama_index.core import (
     VectorStoreIndex,
     SimpleDirectoryReader,
@@ -6,8 +8,8 @@ from llama_index.core import (
 from llama_index.vector_stores.milvus import MilvusVectorStore
 import openai
 
-
-openai.api_key = "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"
+load_dotenv()
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 # load documents
 documents = SimpleDirectoryReader("llama_index/data").load_data()

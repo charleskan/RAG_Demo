@@ -25,9 +25,9 @@ connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.gete
 
 id = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True)
 embedding = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=1536)
-chunk_metadata = FieldSchema(name="chunk_metadata", dtype=DataType.VARCHAR, max_length=1280)
+metadata = FieldSchema(name="metadata", dtype=DataType.JSON, max_length=1280)
 
-fields = [id, embedding, chunk_metadata]
+fields = [id, embedding, metadata]
 
 schema = CollectionSchema(fields=fields)
 
