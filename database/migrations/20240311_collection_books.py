@@ -24,10 +24,11 @@ load_dotenv()
 connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.getenv("MILVUS_PORT"))
 
 id = FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True)
+textNodeId = FieldSchema(name="textNodeId", dtype=DataType.VARCHAR, max_length=1280)
 embedding = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=1536)
-metadata = FieldSchema(name="metadata", dtype=DataType.JSON, max_length=1280)
+details = FieldSchema(name="details", dtype=DataType.JSON)
 
-fields = [id, embedding, metadata]
+fields = [id, textNodeId, embedding, details]
 
 schema = CollectionSchema(fields=fields)
 

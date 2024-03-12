@@ -17,7 +17,7 @@ search_params = {
     "params": {"nprobe": 10}
 }
 
-query_embedding = Settings.embed_model.get_text_embedding("遊戲王是什麼？")
+query_embedding = Settings.embed_model.get_text_embedding("what is Yu-Gi-Oh? who is the author? when was it published?")
 
 results = collection.search(
     data=[query_embedding], 
@@ -29,7 +29,7 @@ results = collection.search(
     expr=None,
     # set the names of the fields you want to 
     # retrieve from the search result.
-    output_fields=['metadata'],
+    output_fields=['details','textNodeId'],
     consistency_level="Eventually"
 )
 
@@ -41,9 +41,9 @@ print(results[0].distances)
 
 # get the value of an output field specified in the search request.
 hit = results[0][0]
-metadata = hit.entity.get('metadata')
+metadata = hit.entity.get('details')
 print(metadata)
-context = metadata["metadata"]["context"]
+context = metadata["details"]["context"]
 print(context)
 
 collection.release()

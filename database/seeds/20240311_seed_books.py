@@ -16,79 +16,121 @@ collection = Collection("book03")
 
 #01
 data_json01 = {
-    "metadata": {
-        "title": "測試的書",
-        "author": "abc",
-        "publication_date": "2022",
+    "details": {
+        "metadata": {
+            "title": "測試的書",
+            "author": "abc",
+            "publication_date": "2022",
+        },
         "context": "這是一本專門用來測試的書，作者是abc，出版日期是2022年。"
     }
 }
-data_context01 = data_json01["metadata"]["context"]
+nodeId01 = "1"
+data_context01 = data_json01["details"]["context"]
 data_embeddings01 = Settings.embed_model.get_text_embedding(data_context01)
-mr01 = collection.insert([[data_embeddings01], [data_json01]])
+document01 = {
+    "textNodeId": nodeId01,
+    "embedding": data_embeddings01,
+    "details": data_json01
+}
+mr01 = collection.insert(data=document01)
 print("Data inserted successfully. Primary keys of the inserted data: ", mr01.primary_keys)
 
 #02
 data_json02 = {
-    "metadata": {
-        "title": "testing book",
-        "author": "Charles",
-        "publication_date": "2033",
+    "details": {
+        "metadata": {
+            "title": "testing book",
+            "author": "Charles",
+            "publication_date": "2033",
+            
+        },
         "context": "this is a book for testing, the author is Charles, and the publication date is 2033."
     }
 }
-data_context02 = data_json02["metadata"]["context"]
+nodeId02 = "2"
+data_context02 = data_json02["details"]["context"]
 data_embeddings02 = Settings.embed_model.get_text_embedding(data_context02)
-mr02 = collection.insert([[data_embeddings02], [data_json02]])
+document02 = {
+    "textNodeId": nodeId02,
+    "embedding": data_embeddings02,
+    "details": data_json02
+}
+mr02 = collection.insert(data=document02)
 print("Data inserted successfully. Primary keys of the inserted data: ", mr02.primary_keys)
 
 #03
 data_json03 = {
-    "metadata": {
-        "title": "遊戲王",
-        "author": "Sean Kan",
-        "publication_date": "2043",
-        "context": "遊戲王是一部很棒的動畫，我很喜歡。"
+    "details": {
+        "metadata": {
+            "title": "Yu-Gi-Oh!",
+            "author": "Sean Kan",
+            "publication_date": "2043",
+        
+        },
+        "context": "Yu-Gi-Oh! is a great anime, I like it very much."
     }
 }
-data_context03 = data_json03["metadata"]["context"]
+nodeId03 = "3"
+data_context03 = data_json03["details"]["context"]
 data_embeddings03 = Settings.embed_model.get_text_embedding(data_context03)
-mr03 = collection.insert([[data_embeddings03], [data_json03]])
+document03 = {
+    "textNodeId": nodeId03,
+    "embedding": data_embeddings03,
+    "details": data_json03
+}
+mr03 = collection.insert(data=document03)
 print("Data inserted successfully. Primary keys of the inserted data: ", mr03.primary_keys)
 
 #04
 data_json04 = {
-    "metadata": {
-        "title": "Yu-Gi-Oh!",
-        "author": "Sean Kan",
-        "publication_date": "2043",
-        "context": "Yu-Gi-Oh! is a great anime, I like it very much."
+    "details": {
+        "metadata": {
+            "title": "Yu-Gi-Oh!",
+            "author": "Charles Kan",
+            "publication_date": "2033",
+        },
+        "context": "Yu-Gi-Oh! is a great anime. Author is Charles Kan, publication date is 2033"
     }
 }
-data_context04 = data_json04["metadata"]["context"]
+nodeId04 = "4"
+data_context04 = data_json04["details"]["context"]
 data_embeddings04 = Settings.embed_model.get_text_embedding(data_context04)
-mr04 = collection.insert([[data_embeddings04], [data_json04]])
+document04 = {
+    "textNodeId": nodeId04,
+    "embedding": data_embeddings04,
+    "details": data_json04
+}
+mr04 = collection.insert(data=document04)
 print("Data inserted successfully. Primary keys of the inserted data: ", mr04.primary_keys)
 
 #05
 data_json05 = {
-    "metadata": {
-        "title": "遊戲攻略書",
-        "author": "Sean Kan",
-        "publication_date": "2043",
+    "details": {
+        "metadata": {
+            "title": "遊戲攻略書",
+            "author": "Sean Kan",
+            "publication_date": "2043",
+        },
         "context": "遊戲攻略書是一種很特別的書，它可以幫助你通過遊戲。作者是Sean Kan，出版日期是2043年。"
     }
 }
-data_context05 = data_json05["metadata"]["context"]
+nodeId05 = "5"
+data_context05 = data_json05["details"]["context"]
 data_embeddings05 = Settings.embed_model.get_text_embedding(data_context05)
-mr05 = collection.insert([[data_embeddings05], [data_json05]])
+document05 = {
+    "textNodeId": nodeId05,
+    "embedding": data_embeddings05,
+    "details": data_json05
+}
+mr05 = collection.insert(data=document05)
 print("Data inserted successfully. Primary keys of the inserted data: ", mr05.primary_keys)
 
 
 index_params = {
-    "index_type": "IVF_FLAT",  # 选择一个索引类型
-    "metric_type": "L2",  # 指定距离计算类型，L2是欧氏距离
-    "params": {"nlist": 1024}  # 索引参数，nlist值根据数据量和查询需求调整
+    "index_type": "IVF_FLAT",  # index type
+    "metric_type": "L2",  # distance metric
+    "params": {"nlist": 1024}  # index params
 }
 
 collection.create_index(field_name="embedding", index_params=index_params)
