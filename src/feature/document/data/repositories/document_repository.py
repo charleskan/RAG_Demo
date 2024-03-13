@@ -1,7 +1,10 @@
 from pymilvus import connections, Collection
 import os
 import json
-from feature.document.domain.repositories.i_document_repository import IDocumentRepository
+import asyncio
+
+
+from src.feature.document.domain.repositories.i_document_repository import IDocumentRepository
 
 class MilvusDocumentRepository(IDocumentRepository):
 
@@ -9,27 +12,35 @@ class MilvusDocumentRepository(IDocumentRepository):
         connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.getenv("MILVUS_PORT"))
         self.collection = Collection("book03")
 
-    def save_document(self, 
-            nodeId: str, 
-            document_embedding: list[float], 
-            details: dict[str, any]) -> dict[str, any]:
-        document = {
-            "textNodeId": nodeId,
-            "embedding": document_embedding,
-            "details": details
-        }
-        mr = self.collection.insert(data=document)
-        return mr.primary_keys
+    def save_document(self, nodeId: str, document_embedding: list[float], details: dict[str, any]) -> str:
+        try:
+            document = {
+                "textNodeId": nodeId,
+                "embedding": document_embedding,
+                "details": details
+            }
+            
+            result = self.collection.insert(data=document)
+            return result.primary_keys
+        
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+            return {"error": "An unexpected error occurred during the document save operation."}
+
     
     def get_document_by_query_embedding(self, 
                                        query_embedding: list[float],
                                        offset: int = 0,
                                        limit: int = 10,
-                                       expression: str = None,
-                                       metric_type: str = "L2",
-                                       ignore_growing: bool = False,
-                                       nprobe: int = 10,
-                                       consistency_level: str = "Eventually") -> dict[str, any]:
+                                       expression: str = None) -> list[dict[str, any]]:
+        try:
+            search_params = {
+                "metric_type": "L2", 
+                "offset": offset, 
+                "ignore_growing": False, 
+                "params": {"nprobe": 10}
+            }
         # """
         # :metric_type: This specifies the metric used to calculate the distance between vectors. L2 represents the Euclidean distance, also known as L2 distance. 
         # It's the most commonly used distance metric, calculating the straight-line distance between two points.
@@ -51,19 +62,21 @@ class MilvusDocumentRepository(IDocumentRepository):
         # with nprobe being a key parameter for balancing search precision and performance. 
         # By adjusting these parameters, you can optimize the search operation's performance and accuracy according to your specific needs.
         # """
-        search_params = {
-            "metric_type": metric_type, 
-            "offset": offset, 
-            "ignore_growing": ignore_growing, 
-            "params": {"nprobe": nprobe}
-        }
-        results = self.collection.search(
-            data=[query_embedding], 
-            anns_field="embedding", 
-            param=search_params,
-            limit=limit,
-            expr=expression,
-            output_fields=['details'],
-            consistency_level=consistency_level
-        )
-        return results
+  
+            results = self.collection.search(
+                data=[query_embedding], 
+                anns_field="embedding", 
+                param=search_params,
+                limit=limit,
+                expr=expression,
+                output_fields=['details'],
+                consistency_level="Eventually",
+                _async=True
+            )
+
+            return results.result()
+    
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+            return {"error": "An unexpected error occurred during the document search operation."}

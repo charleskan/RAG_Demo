@@ -8,7 +8,7 @@ class IDocumentRepository(ABC):
     """
     
     @abstractmethod
-    def saveDocument(self, 
+    def save_document(self, 
             nodeId: str, 
             document_embedding: list[float], 
             details: Dict[str, Any]) -> Dict[str, Any]:
@@ -20,7 +20,7 @@ class IDocumentRepository(ABC):
         pass
 
     @abstractmethod
-    def searchDocumentByQueryEmbedding(self, query_embedding: list[float]) -> Dict[str, Any]:
+    async def get_document_by_query_embedding(self, query_embedding: list[float]) -> list[dict[str, any]]:
         """
         Searches for documents that match the given query.
         

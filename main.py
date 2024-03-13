@@ -23,46 +23,37 @@ book_intro_embedding = Settings.embed_model.get_text_embedding("我是一本專�
 
 print(book_intro_embedding)
 
-# client = MilvusClient(
-# uri='http://localhost:19530',
-# token='root:Milvus',
-# )
 
-# connections.add_connection(
-#   default={"host": "localhost", "port": "19530"}
-# )
+from pymilvus import Collection, MetricType, SearchParam
 
-
-# from pymilvus import Collection, MetricType, SearchParam
-
-# def search_embedding(collection_name, query_embedding, top_k=1):
-#     collection = Collection(collection_name)
-#     search_params = {"metric_type": MetricType.L2, "params": {"nprobe": 10}}
-#     results = collection.search(
-#         data=[query_embedding], 
-#         anns_field="book_intro", 
-#         limit=top_k, 
-#         expr=None
-#     )
-#     return results
+def search_embedding(collection_name, query_embedding, top_k=1):
+    collection = Collection(collection_name)
+    search_params = {"metric_type": MetricType.L2, "params": {"nprobe": 10}}
+    results = collection.search(
+        data=[query_embedding], 
+        anns_field="book_intro", 
+        limit=top_k, 
+        expr=None
+    )
+    return results
 
 
-# app = Flask(__name__)
+app = Flask(__name__)
 
-# @app.route('/')
-# def hello_world():
-#     return "FlaskAPI is running"
+@app.route('/')
+def hello_world():
+    return "FlaskAPI is running"
 
-# @app.route("/query", methods=["POST"])
-# def query():
-#     query_text = request.args.get("text", None)
-#     if query_text is None:
-#         return (
-#             "No text found, please include a ?text=blah parameter in the URL",
-#             400,
-#         )
-#     resp = Settings.llm.complete(query_text)
-#     return str(resp), 200
+@app.route("/query", methods=["POST"])
+def query():
+    query_text = request.args.get("text", None)
+    if query_text is None:
+        return (
+            "No text found, please include a ?text=blah parameter in the URL",
+            400,
+        )
+    resp = Settings.llm.complete(query_text)
+    return str(resp), 200
 
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=8000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
