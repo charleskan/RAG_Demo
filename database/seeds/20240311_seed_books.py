@@ -25,10 +25,14 @@ data_json01 = {
         "context": "這是一本專門用來測試的書，作者是abc，出版日期是2022年。"
     }
 }
+userId01 = "1"
+fileId01 = "1"
 nodeId01 = "1"
 data_context01 = data_json01["details"]["context"]
 data_embeddings01 = Settings.embed_model.get_text_embedding(data_context01)
 document01 = {
+    "userId": userId01,
+    "fileId": fileId01,
     "textNodeId": nodeId01,
     "embedding": data_embeddings01,
     "details": data_json01
@@ -48,10 +52,14 @@ data_json02 = {
         "context": "this is a book for testing, the author is Charles, and the publication date is 2033."
     }
 }
+userId02 = "1"
+fileId02 = "2"
 nodeId02 = "2"
 data_context02 = data_json02["details"]["context"]
 data_embeddings02 = Settings.embed_model.get_text_embedding(data_context02)
 document02 = {
+    "userId": userId02,
+    "fileId": fileId02,
     "textNodeId": nodeId02,
     "embedding": data_embeddings02,
     "details": data_json02
@@ -71,10 +79,14 @@ data_json03 = {
         "context": "Yu-Gi-Oh! is a great anime, I like it very much."
     }
 }
+userId03 = "1"
+fileId03 = "3"
 nodeId03 = "3"
 data_context03 = data_json03["details"]["context"]
 data_embeddings03 = Settings.embed_model.get_text_embedding(data_context03)
 document03 = {
+    "userId": userId03,
+    "fileId": fileId03,
     "textNodeId": nodeId03,
     "embedding": data_embeddings03,
     "details": data_json03
@@ -93,10 +105,14 @@ data_json04 = {
         "context": "Yu-Gi-Oh! is a great anime. Author is Charles Kan, publication date is 2033"
     }
 }
+userId04 = "1"
+fileId04 = "4"
 nodeId04 = "4"
 data_context04 = data_json04["details"]["context"]
 data_embeddings04 = Settings.embed_model.get_text_embedding(data_context04)
 document04 = {
+    "userId": userId04,
+    "fileId": fileId04,
     "textNodeId": nodeId04,
     "embedding": data_embeddings04,
     "details": data_json04
@@ -115,10 +131,14 @@ data_json05 = {
         "context": "遊戲攻略書是一種很特別的書，它可以幫助你通過遊戲。作者是Sean Kan，出版日期是2043年。"
     }
 }
+userId05 = "1"
+fileId05 = "5"
 nodeId05 = "5"
 data_context05 = data_json05["details"]["context"]
 data_embeddings05 = Settings.embed_model.get_text_embedding(data_context05)
 document05 = {
+    "userId": userId05,
+    "fileId": fileId05,
     "textNodeId": nodeId05,
     "embedding": data_embeddings05,
     "details": data_json05

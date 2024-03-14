@@ -23,7 +23,7 @@ async def main():
         "params": {"nprobe": 10}
     }
 
-    query_embedding = Settings.embed_model.get_text_embedding("what is Yu-Gi-Oh? who is the author? when was it published?")
+    query_embedding = Settings.embed_model.get_text_embedding("測試的書作者是誰？")
 
     import numpy as np
 
@@ -38,17 +38,31 @@ async def main():
 
     repository = MilvusDocumentRepository()
 
-    results = repository.get_document_by_query_embedding(query_embedding)
-    # get the IDs of all returned hits
-    results[0].ids
-    # get the distances to the query vector from all returned hits
-    print(results[0].distances)
-    # get the value of an output field specified in the search request.
-    hit = results[0][0]
-    metadata = hit.entity.get('details')
-    print(metadata)
-    context = metadata["details"]["context"]
-    print(context)
+
+    getResults = repository.get_document_by_fileId(userId="1", fileId="1")
+    print(f"get: {getResults}")
+
+    data_json01 = {
+        "details": {
+            "metadata": {
+                "title": "測試的書",
+                "author": "YOYOYO",
+                "publication_date": "2022",
+            },
+            "context": "這是一本專門用來測試的書，作者是YOYOYO，出版日期是2044年。"
+        }
+    }
+
+    updateResults = repository.update_document_by_id(
+                                                userId="1", 
+                                               fileId="1", 
+                                               nodeId="1", 
+                                               document_embedding=query_embedding, 
+                                               details=data_json01)
+    print(f"update: {updateResults}")
+
+    searchResults = repository.get_document_by_query_embedding(userId="1", query_embedding=query_embedding)
+    print(f"search: {searchResults}")
 
     collection.release()
 
