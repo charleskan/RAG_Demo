@@ -11,17 +11,17 @@ async def main():
 
     load_dotenv()
 
-    connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.getenv("MILVUS_PORT"))
+    # connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.getenv("MILVUS_PORT"))
 
-    collection = Collection("book03")      # Get an existing collection.
-    collection.load()
+    # collection = Collection("book03")      # Get an existing collection.
+    # collection.load()
 
-    search_params = {
-        "metric_type": "L2", 
-        "offset": 0, 
-        "ignore_growing": False, 
-        "params": {"nprobe": 10}
-    }
+    # search_params = {
+    #     "metric_type": "L2", 
+    #     "offset": 0, 
+    #     "ignore_growing": False, 
+    #     "params": {"nprobe": 10}
+    # }
 
     query_embedding = Settings.embed_model.get_text_embedding("測試的書作者是誰？")
 
@@ -39,7 +39,7 @@ async def main():
     repository = MilvusDocumentRepository()
 
 
-    getResults = repository.get_document_by_fileId(userId="1", fileId="1")
+    getResults = repository.get_user_document_by_file_id(user_id="1", file_id="1")
     print(f"get: {getResults}")
 
     data_json01 = {
@@ -53,18 +53,17 @@ async def main():
         }
     }
 
-    updateResults = repository.update_document_by_id(
-                                                userId="1", 
-                                               fileId="1", 
-                                               nodeId="1", 
-                                               document_embedding=query_embedding, 
-                                               details=data_json01)
+    updateResults = repository.update_user_document_by_id(user_id="1",
+                                                          file_id="1",
+                                                          node_id="1",
+                                                          document_embedding=query_embedding,
+                                                          details=data_json01)
     print(f"update: {updateResults}")
 
-    searchResults = repository.get_document_by_query_embedding(userId="1", query_embedding=query_embedding)
+    searchResults = repository.get_user_document_by_query_embedding(user_id="1", query_embedding=query_embedding)
     print(f"search: {searchResults}")
 
-    collection.release()
+    # collection.release()
 
 
 if __name__ == "__main__":
