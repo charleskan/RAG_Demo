@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from pymilvus import Collection, connections
 from llama_index.core import (Settings)
 import asyncio
+import numpy as np
 
 
 from src.feature.document.data.repositories.document_repository import MilvusDocumentRepository
@@ -11,21 +12,7 @@ async def main():
 
     load_dotenv()
 
-    # connections.connect(alias="default", host=os.getenv('MILVUS_HOST'), port=os.getenv("MILVUS_PORT"))
-
-    # collection = Collection("book03")      # Get an existing collection.
-    # collection.load()
-
-    # search_params = {
-    #     "metric_type": "L2", 
-    #     "offset": 0, 
-    #     "ignore_growing": False, 
-    #     "params": {"nprobe": 10}
-    # }
-
     query_embedding = Settings.embed_model.get_text_embedding("測試的書作者是誰？")
-
-    import numpy as np
 
     # calculate the L2 norm of the query vector
     norm = np.linalg.norm(query_embedding)
@@ -43,14 +30,12 @@ async def main():
     print(f"get: {getResults}")
 
     data_json01 = {
-        "details": {
             "metadata": {
                 "title": "測試的書",
                 "author": "YOYOYO",
                 "publication_date": "2022",
             },
-            "context": "這是一本專門用來測試的書，作者是YOYOYO，出版日期是2044年。"
-        }
+            "content": "這是一本專門用來測試的書，作者是YOYOYO，出版日期是2044年。"
     }
 
     updateResults = repository.update_user_document_by_id(user_id="1",
@@ -60,8 +45,9 @@ async def main():
                                                           details=data_json01)
     print(f"update: {updateResults}")
 
-    searchResults = repository.get_user_document_by_query_embedding(user_id="1", query_embedding=query_embedding)
-    print(f"search: {searchResults}")
+    searchResults = repository.search_user_documents_by_embedding(user_id="1", embedding=query_embedding)
+
+    print(f"search: {searchResults[0].content}")
 
     # collection.release()
 

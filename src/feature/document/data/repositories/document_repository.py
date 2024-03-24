@@ -73,7 +73,7 @@ class MilvusDocumentRepository(IDocumentRepository):
             return {"error": "An unexpected error occurred during the document save operation."}
 
     
-    def get_user_documents_by_query_embedding(self, user_id: str, query_embedding: list[float], offset: int = 0, limit: int = 10) -> list[Document]:
+    def search_user_documents_by_embedding(self, user_id: str, embedding: list[float], offset: int = 0, limit: int = 10) -> list[Document]:
         """
         Retrieves documents from the Milvus collection based on a query embedding vector, structured as Document instances.
 
@@ -100,7 +100,7 @@ class MilvusDocumentRepository(IDocumentRepository):
             }
 
             results = self.collection.search(
-                data=[query_embedding],
+                data=[embedding],
                 anns_field="embedding",
                 param=search_params,
                 limit=limit,
@@ -110,9 +110,9 @@ class MilvusDocumentRepository(IDocumentRepository):
             )
 
             for hit in results[0]:
-                documents = Document(
+                documents = [Document(
                     metadata=hit.entity.get('document')['metadata'],
-                    content=hit.entity.get('document')['content'])
+                    content=hit.entity.get('document')['content'])]
 
             self.collection.release()
 
@@ -194,7 +194,7 @@ class MilvusDocumentRepository(IDocumentRepository):
 
             results = self.collection.query(
                 expr=f'userId == "{user_id}" && fileId == "{file_id}"',
-                output_fields=['textNodeId', 'details'],
+                output_fields=['textNodeId', 'document'],
                 consistency_level="Strong",
                 _async=True
             )

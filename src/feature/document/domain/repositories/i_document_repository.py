@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
 
+from src.feature.document.domain.entities.document import Document
+
 
 class IDocumentRepository(ABC):
     """
@@ -22,11 +24,8 @@ class IDocumentRepository(ABC):
         """
 
     @abstractmethod
-    def get_user_documents_by_query_embedding(self,
-                                            user_id: str,
-                                            query_embedding: list[float],
-                                            offset: int = 0,
-                                            limit: int = 10) -> list[dict[str, any]]:
+    def search_user_documents_by_embedding(self, user_id: str, embedding: list[float], offset: int = 0, limit: int = 10) -> list[Document]:
+
         """
         Searches for documents that match the given query.
         
@@ -48,7 +47,8 @@ class IDocumentRepository(ABC):
         """
 
     @abstractmethod
-    def get_user_document_by_file_id(self, user_id: str, file_id: str) -> Dict[str, Any]:        """
+    def get_user_document_by_file_id(self, user_id: str, file_id: str) -> Dict[str, Any]:       
+        """
         Retrieves a document from the repository by its fileId.
         
         :param fileId: The fileId of the document to retrieve.
