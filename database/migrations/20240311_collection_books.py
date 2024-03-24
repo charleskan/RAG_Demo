@@ -27,9 +27,9 @@ textNodeId = FieldSchema(name="textNodeId", dtype=DataType.VARCHAR, max_length=1
 userId = FieldSchema(name="userId", dtype=DataType.VARCHAR, max_length=128)
 fileId = FieldSchema(name="fileId", dtype=DataType.VARCHAR, max_length=128)
 embedding = FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=1536)
-details = FieldSchema(name="details", dtype=DataType.JSON)
+document = FieldSchema(name="document", dtype=DataType.JSON)
 
-fields = [userId, fileId, textNodeId, embedding, details]
+fields = [userId, fileId, textNodeId, embedding, document]
 
 schema = CollectionSchema(fields=fields)
 
