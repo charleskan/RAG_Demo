@@ -44,7 +44,6 @@ class MilvusDocumentRepository(IDocumentRepository):
             Exception: If an error occurs during the document save operation.
         """
         try:
-            self.collection.load()
 
             document = {
                 "userId": user_id,
