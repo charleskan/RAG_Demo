@@ -3,6 +3,7 @@ from pymilvus import connections, Collection
 import os
 
 
+from src.feature.document.domain.entities.document import Document
 from src.feature.document.domain.repositories.i_document_repository import IDocumentRepository
 
 class MilvusDocumentRepository(IDocumentRepository):
@@ -73,22 +74,18 @@ class MilvusDocumentRepository(IDocumentRepository):
             return {"error": "An unexpected error occurred during the document save operation."}
 
     
-    def get_user_documents_by_query_embedding(self,
-                                            user_id: str, 
-                                            query_embedding: list[float],
-                                            offset: int = 0,
-                                            limit: int = 10) -> list[dict[str, any]]:
+    def get_user_documents_by_query_embedding(self, user_id: str, query_embedding: list[float], offset: int = 0, limit: int = 10) -> list[Document]:
         """
-        Retrieves documents from the Milvus collection based on a query embedding vector.
+        Retrieves documents from the Milvus collection based on a query embedding vector, structured as Document instances.
 
         Args:
-            userId (str): The ID of the user who owns the documents.
+            user_id (str): The ID of the user who owns the documents.
             query_embedding (list[float]): The embedding vector representation of the query.
             offset (int, optional): The offset value for pagination. Defaults to 0.
             limit (int, optional): The maximum number of documents to retrieve. Defaults to 10.
 
         Returns:
-            list[dict[str, any]]: A list of documents matching the query.
+            list[Document]: A list of Document instances matching the query, in the order they were found.
 
         Raises:
             Exception: If an error occurs during the document search operation.
@@ -102,23 +99,25 @@ class MilvusDocumentRepository(IDocumentRepository):
                 "ignore_growing": False, 
                 "params": {"nprobe": 10}
             }
-  
-            document = self.collection.search(
+
+            results = self.collection.search(
                 data=[query_embedding],
                 anns_field="embedding",
                 param=search_params,
                 limit=limit,
                 expr=f'userId == "{user_id}"',
-                output_fields=['details'],
+                output_fields=['document'],
                 consistency_level="Strong",
-                _async=True
             )
 
-            results = document.result()
+            for hit in results[0]:
+                documents = Document(
+                    metadata=hit.entity.get('document')['metadata'],
+                    content=hit.entity.get('document')['content'])
 
             self.collection.release()
 
-            return results
+            return documents
     
         except Exception as e:
             print(f"An error occurred: {e}")
