@@ -153,7 +153,7 @@ class MilvusDocumentRepository(IDocumentRepository):
                 "fileId": file_id,
                 "textNodeId": node_id,
                 "embedding": document_embedding,
-                "details": details
+                "document": details
             }
             
             result = self.collection.upsert(data=document)
