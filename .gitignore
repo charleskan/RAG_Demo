@@ -8,3 +8,9 @@
 /env
 
 database/volumes
+
+*__pycache__
+
+.cpython-*
+
+*.pyc
